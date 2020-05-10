@@ -13,11 +13,19 @@ namespace TCAdminCrons
     {
         public static void Main(string[] args)
         {
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-            Console.WriteLine("TCAdmin Crons.");
-            RegisterToTcAdmin();
+            try
+            {
+                ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+                Console.WriteLine("TCAdmin Crons.");
+                RegisterToTcAdmin();
 
-            Task.Run(async () => await RegisterCrons());
+                Task.Run(async () => await RegisterCrons());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
             
             Console.ReadLine();
         }
