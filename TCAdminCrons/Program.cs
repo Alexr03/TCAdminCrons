@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Quartz;
 using Quartz.Impl;
@@ -12,6 +13,7 @@ namespace TCAdminCrons
     {
         public static void Main(string[] args)
         {
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             Console.WriteLine("TCAdmin Crons.");
             RegisterToTcAdmin();
 

@@ -17,11 +17,18 @@ namespace TCAdminCrons.Crons
 
         public override async Task DoAction(IJobExecutionContext context)
         {
-            Console.WriteLine("DOING MINECRAFT UPDATE CRON JOB.");
-            await base.DoAction(context);
-            AddUpdatesForMcTemp();
+            try
+            {
+                Console.WriteLine("DOING MINECRAFT UPDATE CRON JOB.");
+                AddUpdatesForMcTemp();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
-        
+
         public static void AddUpdatesForMcTemp()
         {
             var snapshots = MinecraftVersionManifest.GetManifests().Versions
@@ -29,7 +36,7 @@ namespace TCAdminCrons.Crons
 
             var releases = MinecraftVersionManifest.GetManifests().Versions
                 .Where(x => x.Type.ToLower() == "release").Take(5);
-            
+
             foreach (var metaData in snapshots.Select(version => version.GetMetadata()))
             {
                 Console.WriteLine($"Adding update for: {metaData.Id}");
@@ -37,7 +44,7 @@ namespace TCAdminCrons.Crons
                 metaData.CreateGameUpdate().Save();
                 Console.WriteLine($"Saved Game Update for {metaData.Id}");
             }
-            
+
             foreach (var metaData in releases.Select(version => version.GetMetadata()))
             {
                 Console.WriteLine($"Adding update for: {metaData.Id}");
