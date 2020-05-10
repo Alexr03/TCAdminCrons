@@ -15,7 +15,7 @@ namespace TCAdminCrons
             Console.WriteLine("TCAdmin Crons.");
             RegisterToTcAdmin();
 
-            Task.Run(async () => { await RegisterCrons(); });
+            RegisterCrons().GetAwaiter().GetResult();
 
             Console.ReadLine();
         }
