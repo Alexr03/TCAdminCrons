@@ -72,7 +72,7 @@ namespace TCAdminCrons.Models.MinecraftVanilla
             var gameUpdate = new GameUpdate
             {
                 Name = this.Id,
-                GroupName = this.Type,
+                GroupName = this.Type == "release" ? "Vanilla Release" : "Vanilla Snapshot",
                 WindowsFileName = $"{this.Downloads.Server.Url} minecraft_server.jar",
                 LinuxFileName = "",
                 ExtractPath = "/",
