@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using TCAdminCrons.Models;
+using TCAdminCrons.Models.MinecraftVanilla;
 
 namespace TCAdminCrons.Tests
 {

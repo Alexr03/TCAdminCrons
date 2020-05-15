@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using TCAdmin.GameHosting.SDK.Objects;
 using TCAdminCrons.Configuration;
 
-namespace TCAdminCrons.Models
+namespace TCAdminCrons.Models.MinecraftVanilla
 {
     public class Server
     {
@@ -58,7 +58,7 @@ namespace TCAdminCrons.Models
                 Comments = $"Release Date: {this.ReleaseTime} | Added by TCAdminCrons",
                 UserAccess = true,
                 SubAdminAccess = true,
-                ResellerAccess = true,
+                ResellerAccess = true
             };
             
             gameMod.GenerateKey();

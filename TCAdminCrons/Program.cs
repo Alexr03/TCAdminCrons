@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Quartz;
 using Quartz.Impl;
+using TCAdmin.GameHosting.SDK.Objects;
 using TCAdminCrons.Configuration;
 using TCAdminWrapper;
 
@@ -18,7 +19,7 @@ namespace TCAdminCrons
             RegisterToTcAdmin();
 
             RegisterCrons().GetAwaiter().GetResult();
-
+            
             while (true)
             {
                 Console.ReadLine();
@@ -59,7 +60,15 @@ namespace TCAdminCrons
             var tcAdminClientConfiguration =
                 new TCAdminClientConfiguration(config.ConnectionString, config.Encrypted, "TCAdminCrons");
             _ = new TcAdminClient(tcAdminClientConfiguration);
-            Console.WriteLine("Registered to TCAdmin successfully.");
+            try
+            {
+                new Server(1).Find();
+                Console.WriteLine("Registered to TCAdmin successfully.");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Unable to connect to TCAdmin. Error: {e.Message}");
+            }
         }
     }
 }

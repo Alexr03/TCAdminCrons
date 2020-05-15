@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using Newtonsoft.Json;
 
-namespace TCAdminCrons.Models
+namespace TCAdminCrons.Models.MinecraftVanilla
 {
     public class Version
     {
