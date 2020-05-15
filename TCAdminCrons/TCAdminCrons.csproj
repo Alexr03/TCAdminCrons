@@ -169,8 +169,8 @@
         <Compile Include="Configuration\CronConfiguration.cs" />
         <Compile Include="Configuration\MinecraftCronConfiguration.cs" />
         <Compile Include="Configuration\TcAdminConfiguration.cs" />
-        <Compile Include="Crons\MinecraftPaperUpdatesCron.cs" />
-        <Compile Include="Crons\MinecraftVanillaUpdatesCron.cs" />
+        <Compile Include="Crons\GameUpdates\MinecraftPaperUpdatesCron.cs" />
+        <Compile Include="Crons\GameUpdates\MinecraftVanillaUpdatesCron.cs" />
         <Compile Include="Models\MinecraftVanilla\MinecraftVersionManifest.cs" />
         <Compile Include="Models\MinecraftVanilla\MinecraftVersionMetadata.cs" />
         <Compile Include="Models\Paper\PaperManifest.cs" />

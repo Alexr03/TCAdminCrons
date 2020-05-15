@@ -6,8 +6,9 @@ using TCAdmin.GameHosting.SDK.Objects;
 using TCAdminCrons.Configuration;
 using TCAdminCrons.Models.Paper;
 
-namespace TCAdminCrons.Crons
+namespace TCAdminCrons.Crons.GameUpdates
 {
+    [DisallowConcurrentExecution]
     public class MinecraftPaperUpdatesCron : TcAdminCronJob
     {
         private readonly MinecraftCronConfiguration _minecraftCronConfiguration =
@@ -24,7 +25,6 @@ namespace TCAdminCrons.Crons
             {
                 Console.WriteLine("[Minecraft Paper Update Cron] Running...");
                 AddUpdatesForMcTemp();
-                // RemoveAllGameUpdates();
             }
             catch (Exception e)
             {

@@ -79,7 +79,7 @@ namespace TCAdminCrons.Models.MinecraftVanilla
                 Reinstallable = true,
                 DefaultInstall = false,
                 GameId = config.GameId,
-                Comments = $"Release Date: {this.ReleaseTime} | Added by TCAdminCrons",
+                Comments = $"This is a vanilla server snapshot of Minecraft: Java Edition | Release Date: {this.ReleaseTime} | Added by TCAdminCrons",
                 UserAccess = true,
                 SubAdminAccess = true,
                 ResellerAccess = true,

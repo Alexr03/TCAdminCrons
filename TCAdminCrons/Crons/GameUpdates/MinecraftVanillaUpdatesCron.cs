@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Quartz;
+using Quartz.Impl.Matchers;
 using TCAdmin.GameHosting.SDK.Objects;
 using TCAdminCrons.Configuration;
-using TCAdminCrons.Models;
 using TCAdminCrons.Models.MinecraftVanilla;
 
-namespace TCAdminCrons.Crons
+namespace TCAdminCrons.Crons.GameUpdates
 {
+    [DisallowConcurrentExecution]
     public class MinecraftVanillaUpdatesCron : TcAdminCronJob
     {
         private readonly MinecraftCronConfiguration _minecraftCronConfiguration = MinecraftCronConfiguration.GetConfiguration();
@@ -20,6 +22,7 @@ namespace TCAdminCrons.Crons
 
         public override async Task DoAction(IJobExecutionContext context)
         {
+            await context.Scheduler.PauseJobs(GroupMatcher<JobKey>.AnyGroup(), CancellationToken.None);
             try
             {
                 Console.WriteLine("[Minecraft Update Cron] Running...");
@@ -30,6 +33,10 @@ namespace TCAdminCrons.Crons
             {
                 Console.WriteLine(e);
                 throw;
+            }
+            finally
+            {
+                await context.Scheduler.ResumeJobs(GroupMatcher<JobKey>.AnyGroup(), CancellationToken.None);
             }
         }
 

@@ -34,6 +34,7 @@ namespace TCAdminCrons
                 .Select(t => (TcAdminCronJob) Activator.CreateInstance(t)).ToList();
 
             var scheduler = await StdSchedulerFactory.GetDefaultScheduler();
+            scheduler.Context["quartz.threadPool.threadCount"] = "1";
             await scheduler.Clear();
             await scheduler.Start();
 
