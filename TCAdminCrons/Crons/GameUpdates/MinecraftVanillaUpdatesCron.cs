@@ -44,10 +44,10 @@ namespace TCAdminCrons.Crons.GameUpdates
         {
             var gameUpdates = GameUpdate.GetUpdates(_minecraftCronConfiguration.GameId).Cast<GameUpdate>().ToList();
             var snapshots = MinecraftVersionManifest.GetManifests().Versions
-                .Where(x => x.Type.ToLower() == "snapshot");
+                .Where(x => x.Type.ToLower() == "snapshot").Take(10);
 
             var releases = MinecraftVersionManifest.GetManifests().Versions
-                .Where(x => x.Type.ToLower() == "release");
+                .Where(x => x.Type.ToLower() == "release").Take(10);
 
             foreach (var metaData in snapshots.Select(version => version.GetMetadata()))
             {
