@@ -59,7 +59,7 @@ namespace TCAdminCrons
         {
             var config = TcAdminConfiguration.GetConfiguration();
             var tcAdminClientConfiguration =
-                new TCAdminClientConfiguration(config.ConnectionString, config.Encrypted, "TCAdminCrons");
+                new TCAdminClientConfiguration(config.ConnectionString, config.Encrypted, "TCAdminCrons", new TCAdminSettings(false));
             _ = new TcAdminClient(tcAdminClientConfiguration);
             try
             {
