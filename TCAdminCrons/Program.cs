@@ -1,24 +1,33 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
-using Quartz;
-using Quartz.Impl;
+using System.Reflection;
+using FluentScheduler;
+using Serilog;
 using TCAdmin.GameHosting.SDK.Objects;
 using TCAdminCrons.Configuration;
+using TCAdminCrons.Crons.GameUpdates;
 using TCAdminWrapper;
 
 namespace TCAdminCrons
 {
     public class Program
     {
+        public static Registry CronRegistry;
+        
         public static void Main(string[] args)
         {
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-            Console.WriteLine("TCAdmin Crons.");
-            RegisterToTcAdmin();
+            Console.Title = "TCAdmin Crons - By Alexr03";
 
-            RegisterCrons().GetAwaiter().GetResult();
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .CreateLogger();
+
+            Log.Information("TCAdmin Crons - By Alexr03 | Version: " + Assembly.GetExecutingAssembly().GetName().Version);
+            CronRegistry = new Registry();
+            
+            RegisterToTcAdmin();
+            RegisterCrons();
             
             while (true)
             {
@@ -26,32 +35,19 @@ namespace TCAdminCrons
             }
         }
 
-        public static async Task RegisterCrons()
+        public static void RegisterCrons()
         {
-            var exporters = typeof(TcAdminCronJob)
-                .Assembly.GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(TcAdminCronJob)) && !t.IsAbstract)
-                .Select(t => (TcAdminCronJob) Activator.CreateInstance(t)).ToList();
+            Log.Information("Initializing Cron Registry");
 
-            var scheduler = await StdSchedulerFactory.GetDefaultScheduler();
-            scheduler.Context["quartz.threadPool.threadCount"] = "1";
-            await scheduler.Clear();
-            await scheduler.Start();
+            CronRegistry.NonReentrantAsDefault();
+            CronRegistry.Schedule<MinecraftVanillaUpdatesCron>().AndThen<MinecraftPaperUpdatesCron>().ToRunNow().AndEvery(1)
+                .Hours();
 
-            foreach (var scheduledTask in exporters)
+            JobManager.Initialize(CronRegistry);
+            
+            foreach (var schedule in JobManager.AllSchedules)
             {
-                var type = scheduledTask.GetType();
-                var build = JobBuilder.Create(type).WithIdentity(type.Name + "_" + new Random().Next(1000)).Build();
-                var schedule = TriggerBuilder.Create().WithIdentity(type.Name + "_" + new Random().Next(1000))
-                    .StartNow().WithSimpleSchedule(x =>
-                        x.WithInterval(
-                                TimeSpan.FromMilliseconds(scheduledTask.CronConfiguration.ExecuteEveryMilliseconds))
-                            .RepeatForever())
-                    .Build();
-
-                await scheduler.ScheduleJob(build, schedule);
-                Console.WriteLine(
-                    $"[Cron Scheduler] Scheduled {type.Name} to fire every {scheduledTask.CronConfiguration.ExecuteEveryMilliseconds}ms");
+                Log.Information($"{schedule.Name} has been scheduled to run at {schedule.NextRun:F}");
             }
         }
 
@@ -64,11 +60,11 @@ namespace TCAdminCrons
             try
             {
                 new Server(1).Find();
-                Console.WriteLine("Registered to TCAdmin successfully.");
+                Log.Information("Registered to TCAdmin successfully.");
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Unable to connect to TCAdmin. Error: {e.Message}");
+                Log.Error(e, e.Message);
             }
         }
     }

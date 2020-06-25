@@ -1,42 +1,33 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using Quartz;
-using Quartz.Impl.Matchers;
+using Serilog;
 using TCAdmin.GameHosting.SDK.Objects;
 using TCAdminCrons.Configuration;
 using TCAdminCrons.Models.MinecraftVanilla;
 
 namespace TCAdminCrons.Crons.GameUpdates
 {
-    [DisallowConcurrentExecution]
     public class MinecraftVanillaUpdatesCron : TcAdminCronJob
     {
         private readonly MinecraftCronConfiguration _minecraftCronConfiguration = MinecraftCronConfiguration.GetConfiguration();
 
-        public MinecraftVanillaUpdatesCron()
+        public override async Task DoAction()
         {
-            this.CronConfiguration = new CronConfiguration(_minecraftCronConfiguration.RepeatEveryMilliseconds);
-        }
-
-        public override async Task DoAction(IJobExecutionContext context)
-        {
-            await context.Scheduler.PauseJobs(GroupMatcher<JobKey>.AnyGroup(), CancellationToken.None);
+            if (!_minecraftCronConfiguration.Enabled)
+            {
+                Log.Information("Skipping Minecraft Vanilla Cron Job - Disabled in Configuration.");
+                return;
+            }
             try
             {
-                Console.WriteLine("[Minecraft Update Cron] Running...");
+                Log.Information("[Minecraft Update Cron] Running...");
                 AddUpdatesForMcTemp();
-                // RemoveAllGameUpdates();
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Log.Error(e, e.Message);
                 throw;
-            }
-            finally
-            {
-                await context.Scheduler.ResumeJobs(GroupMatcher<JobKey>.AnyGroup(), CancellationToken.None);
             }
         }
 
@@ -44,10 +35,10 @@ namespace TCAdminCrons.Crons.GameUpdates
         {
             var gameUpdates = GameUpdate.GetUpdates(_minecraftCronConfiguration.GameId).Cast<GameUpdate>().ToList();
             var snapshots = MinecraftVersionManifest.GetManifests().Versions
-                .Where(x => x.Type.ToLower() == "snapshot").Take(10);
+                .Where(x => x.Type.ToLower() == "snapshot").Take(_minecraftCronConfiguration.GetLastUpdates);
 
             var releases = MinecraftVersionManifest.GetManifests().Versions
-                .Where(x => x.Type.ToLower() == "release").Take(10);
+                .Where(x => x.Type.ToLower() == "release").Take(_minecraftCronConfiguration.GetLastUpdates);
 
             foreach (var metaData in snapshots.Select(version => version.GetMetadata()))
             {
@@ -55,11 +46,11 @@ namespace TCAdminCrons.Crons.GameUpdates
                 if (!gameUpdates.Any(x => x.Name == gameUpdate.Name && x.GroupName == gameUpdate.GroupName))
                 {
                     gameUpdate.Save();
-                    Console.WriteLine($"[Minecraft Update Cron] Saved Game Update for {metaData.Id}");
+                    Log.Information($"[Minecraft Update Cron] Saved Game Update for {metaData.Id}");
                 }
                 else
                 {
-                    Console.WriteLine("[Minecraft Update Cron] Game Update already exists for " + metaData.Id);
+                    Log.Information("[Minecraft Update Cron] Game Update already exists for " + metaData.Id);
                 }
             }
 
@@ -69,11 +60,11 @@ namespace TCAdminCrons.Crons.GameUpdates
                 if (!gameUpdates.Any(x => x.Name == gameUpdate.Name && x.GroupName == gameUpdate.GroupName))
                 {
                     gameUpdate.Save();
-                    Console.WriteLine($"[Minecraft Update Cron] Saved Game Update for {metaData.Id}");
+                    Log.Information($"[Minecraft Update Cron] Saved Game Update for {metaData.Id}");
                 }
                 else
                 {
-                    Console.WriteLine("[Minecraft Update Cron] Game Update already exists for " + metaData.Id);
+                    Log.Information("[Minecraft Update Cron] Game Update already exists for " + metaData.Id);
                 }
             }
         }

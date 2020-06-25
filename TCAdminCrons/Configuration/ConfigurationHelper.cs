@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.IO;
 using Newtonsoft.Json;
 
 namespace TCAdminCrons.Configuration
@@ -8,12 +8,12 @@ namespace TCAdminCrons.Configuration
         public static T GetConfiguration<T>(string configName)
         {
             var configLocation = $"./Config/{configName}";
-            if (!System.IO.File.Exists(configLocation))
+            if (!File.Exists(configLocation))
             {
-                throw new ArgumentException("Config not found", nameof(configName));
+                File.WriteAllText(configLocation, JsonConvert.SerializeObject(default(T), Formatting.Indented));
             }
             
-            var configText = System.IO.File.ReadAllText(configLocation);
+            var configText = File.ReadAllText(configLocation);
             return JsonConvert.DeserializeObject<T>(configText);
         }
     }

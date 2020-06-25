@@ -1,21 +1,15 @@
 ﻿using System.Threading.Tasks;
-using Quartz;
-using TCAdminCrons.Configuration;
+using FluentScheduler;
 
 namespace TCAdminCrons
 {
-    public class TcAdminCronJob : IJob
+    public abstract class TcAdminCronJob : IJob
     {
-        public CronConfiguration CronConfiguration;
-        
-        public Task Execute(IJobExecutionContext context)
-        {
-            return DoAction(context);
-        }
+        public abstract Task DoAction();
 
-        public virtual async Task DoAction(IJobExecutionContext context)
+        public void Execute()
         {
-            return;
+            Task.Run(async () => await DoAction()).Wait();
         }
     }
 }

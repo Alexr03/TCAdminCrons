@@ -1,34 +1,33 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Quartz;
+using Serilog;
 using TCAdmin.GameHosting.SDK.Objects;
 using TCAdminCrons.Configuration;
 using TCAdminCrons.Models.Paper;
 
 namespace TCAdminCrons.Crons.GameUpdates
 {
-    [DisallowConcurrentExecution]
     public class MinecraftPaperUpdatesCron : TcAdminCronJob
     {
         private readonly MinecraftCronConfiguration _minecraftCronConfiguration =
             MinecraftCronConfiguration.GetConfiguration();
 
-        public MinecraftPaperUpdatesCron()
+        public override async Task DoAction()
         {
-            this.CronConfiguration = new CronConfiguration(_minecraftCronConfiguration.RepeatEveryMilliseconds);
-        }
-
-        public override async Task DoAction(IJobExecutionContext context)
-        {
+            if (!_minecraftCronConfiguration.Enabled)
+            {
+                Log.Information("Skipping Minecraft Vanilla Cronjob - Disabled in Configuration.");
+                return;
+            }
             try
             {
-                Console.WriteLine("[Minecraft Paper Update Cron] Running...");
+                Log.Information("[Minecraft Paper Update Cron] Running...");
                 AddUpdatesForMcTemp();
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Log.Error(e, e.Message);
                 throw;
             }
         }
@@ -44,11 +43,11 @@ namespace TCAdminCrons.Crons.GameUpdates
                 if (!gameUpdates.Any(x => x.Name == gameUpdate.Name && x.GroupName == gameUpdate.GroupName))
                 {
                     gameUpdate.Save();
-                    Console.WriteLine($"[Minecraft Paper Update Cron] Saved Game Update for {version}");
+                    Log.Information($"[Minecraft Paper Update Cron] Saved Game Update for {version}");
                 }
                 else
                 {
-                    Console.WriteLine("[Minecraft Paper Update Cron] Game Update already exists for " + version);
+                    Log.Information("[Minecraft Paper Update Cron] Game Update already exists for " + version);
                 }
             }
         }
