@@ -38,7 +38,7 @@ namespace TCAdminCrons.Models.Paper
             
             var gameUpdate = new GameUpdate
             {
-                Name = config.PaperSettings.NameTemplate.Replace("{Id}", version),
+                Name = config.PaperSettings.NameTemplate.ReplaceWithVariables(variables),
                 GroupName = config.PaperSettings.Group,
                 WindowsFileName = $"{GetDownloadUrl(version)} minecraft_server.jar",
                 LinuxFileName = $"{GetDownloadUrl(version)} minecraft_server.jar",
