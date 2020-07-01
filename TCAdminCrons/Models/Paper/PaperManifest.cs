@@ -29,10 +29,10 @@ namespace TCAdminCrons.Models.Paper
             
             var gameUpdate = new GameUpdate
             {
-                Name = version,
-                GroupName = "Paper",
+                Name = config.PaperSettings.NameTemplate.Replace("{Id}", version),
+                GroupName = config.PaperSettings.Group,
                 WindowsFileName = $"{GetDownloadUrl(version)} minecraft_server.jar",
-                LinuxFileName = "",
+                LinuxFileName = $"{GetDownloadUrl(version)} minecraft_server.jar",
                 ExtractPath = "/",
                 Reinstallable = true,
                 DefaultInstall = false,
@@ -41,6 +41,7 @@ namespace TCAdminCrons.Models.Paper
                 UserAccess = true,
                 SubAdminAccess = true,
                 ResellerAccess = true,
+                ViewOrder = config.PaperSettings.UseVersionAsViewOrder ? int.Parse(version.Replace(".", ".")) : 0
             };
 
             gameUpdate.GenerateKey();

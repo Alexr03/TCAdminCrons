@@ -41,40 +41,16 @@ namespace TCAdminCrons.Models.MinecraftVanilla
         [JsonProperty("type")]
         public string Type { get; set; }
 
-        public GameMod CreateGameMod()
-        {
-            var config = MinecraftCronConfiguration.GetConfiguration();
-            
-            var gameMod = new GameMod
-            {
-                Name = this.Id,
-                GroupName = this.Type,
-                WindowsFileName = $"{this.Downloads.Server.Url} minecraft_server.jar",
-                LinuxFileName = "",
-                ExtractPath = "/",
-                InstallType = InstallType.Silent,
-                DefaultInstall = false,
-                GameId = config.GameId,
-                Comments = $"Release Date: {this.ReleaseTime} | Added by TCAdminCrons",
-                UserAccess = true,
-                SubAdminAccess = true,
-                ResellerAccess = true
-            };
-            
-            gameMod.GenerateKey();
-            return gameMod;
-        }
-
         public GameUpdate CreateGameUpdate()
         {
             var config = MinecraftCronConfiguration.GetConfiguration();
             
             var gameUpdate = new GameUpdate
             {
-                Name = this.Id,
-                GroupName = this.Type == "release" ? "Vanilla Release" : "Vanilla Snapshot",
+                Name = config.VanillaSettings.NameTemplate.Replace("{Id}", Id),
+                GroupName = this.Type == "release" ? config.VanillaSettings.Group : config.VanillaSettings.SnapshotGroup,
                 WindowsFileName = $"{this.Downloads.Server.Url} minecraft_server.jar",
-                LinuxFileName = "",
+                LinuxFileName = $"{this.Downloads.Server.Url} minecraft_server.jar",
                 ExtractPath = "/",
                 Reinstallable = true,
                 DefaultInstall = false,
@@ -83,6 +59,7 @@ namespace TCAdminCrons.Models.MinecraftVanilla
                 UserAccess = true,
                 SubAdminAccess = true,
                 ResellerAccess = true,
+                ViewOrder = config.VanillaSettings.UseVersionAsViewOrder ? int.Parse(this.Id.Replace(".", ".")) : 0
             };
 
             gameUpdate.GenerateKey();

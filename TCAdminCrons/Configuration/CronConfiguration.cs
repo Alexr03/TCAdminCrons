@@ -2,10 +2,6 @@
 {
     public class CronConfiguration
     {
-        public bool Enabled { get; set; } = false;
-        
-        public CronConfiguration()
-        {
-        }
+        public bool EnableCron { get; set; } = false;
     }
 }

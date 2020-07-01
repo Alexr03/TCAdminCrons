@@ -14,14 +14,14 @@ namespace TCAdminCrons.Crons.GameUpdates
 
         public override async Task DoAction()
         {
-            if (!_minecraftCronConfiguration.Enabled)
+            if (!_minecraftCronConfiguration.EnableCron || !_minecraftCronConfiguration.PaperSettings.Enabled)
             {
-                Log.Information("Skipping Minecraft Vanilla Cron Job - Disabled in Configuration.");
+                Log.Information("[Minecraft Vanilla Update Cron] - Disabled in Configuration.");
                 return;
             }
             try
             {
-                Log.Information("[Minecraft Update Cron] Running...");
+                Log.Information("[Minecraft Vanilla Update Cron] Running...");
                 AddUpdatesForMcTemp();
             }
             catch (Exception e)
@@ -46,11 +46,11 @@ namespace TCAdminCrons.Crons.GameUpdates
                 if (!gameUpdates.Any(x => x.Name == gameUpdate.Name && x.GroupName == gameUpdate.GroupName))
                 {
                     gameUpdate.Save();
-                    Log.Information($"[Minecraft Update Cron] Saved Game Update for {metaData.Id}");
+                    Log.Information($"[Minecraft Vanilla Update Cron] Saved Game Update for {metaData.Id}");
                 }
                 else
                 {
-                    Log.Information("[Minecraft Update Cron] Game Update already exists for " + metaData.Id);
+                    Log.Information("[Minecraft Vanilla Update Cron] Game Update already exists for " + metaData.Id);
                 }
             }
 
@@ -60,29 +60,13 @@ namespace TCAdminCrons.Crons.GameUpdates
                 if (!gameUpdates.Any(x => x.Name == gameUpdate.Name && x.GroupName == gameUpdate.GroupName))
                 {
                     gameUpdate.Save();
-                    Log.Information($"[Minecraft Update Cron] Saved Game Update for {metaData.Id}");
+                    Log.Information($"[Minecraft Vanilla Update Cron] Saved Game Update for {metaData.Id}");
                 }
                 else
                 {
-                    Log.Information("[Minecraft Update Cron] Game Update already exists for " + metaData.Id);
+                    Log.Information("[Minecraft Vanilla Update Cron] Game Update already exists for " + metaData.Id);
                 }
             }
-        }
-
-        public void RemoveAllGameMods()
-        {
-            Console.WriteLine("[Minecraft Update Cron] Deleting all from game id " + _minecraftCronConfiguration.GameId);
-            var objectList = GameMod.GetMods(_minecraftCronConfiguration.GameId);
-            objectList.DeleteAll();
-            Console.WriteLine("Done");
-        }
-
-        public void RemoveAllGameUpdates()
-        {
-            Console.WriteLine("[Minecraft Update Cron] Deleting all from game id " + _minecraftCronConfiguration.GameId);
-            var objectList = GameUpdate.GetUpdates(_minecraftCronConfiguration.GameId);
-            objectList.DeleteAll();
-            Console.WriteLine("Done");
         }
     }
 }

@@ -15,9 +15,9 @@ namespace TCAdminCrons.Crons.GameUpdates
 
         public override async Task DoAction()
         {
-            if (!_minecraftCronConfiguration.Enabled)
+            if (!_minecraftCronConfiguration.EnableCron || !_minecraftCronConfiguration.PaperSettings.Enabled)
             {
-                Log.Information("Skipping Minecraft Vanilla Cronjob - Disabled in Configuration.");
+                Log.Information("[Minecraft Paper Update Cron] - Disabled in Configuration.");
                 return;
             }
             try
