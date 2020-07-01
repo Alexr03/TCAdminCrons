@@ -179,7 +179,6 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Configuration\ConfigurationHelper.cs" />
-        <Compile Include="Configuration\CronConfiguration.cs" />
         <Compile Include="Configuration\MinecraftCronConfiguration.cs" />
         <Compile Include="Configuration\TcAdminConfiguration.cs" />
         <Compile Include="Crons\GameUpdates\MinecraftPaperUpdatesCron.cs" />
@@ -190,6 +189,7 @@
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="TcAdminCronJob.cs" />
+        <Compile Include="VariableReplacements.cs" />
     </ItemGroup>
     <ItemGroup>
       <None Include="packages.config" />

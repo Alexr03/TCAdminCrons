@@ -15,7 +15,7 @@ namespace TCAdminCrons.Crons.GameUpdates
 
         public override async Task DoAction()
         {
-            if (!_minecraftCronConfiguration.EnableCron || !_minecraftCronConfiguration.PaperSettings.Enabled)
+            if (!_minecraftCronConfiguration.PaperSettings.Enabled)
             {
                 Log.Information("[Minecraft Paper Update Cron] - Disabled in Configuration.");
                 return;
@@ -37,7 +37,7 @@ namespace TCAdminCrons.Crons.GameUpdates
             var gameUpdates = GameUpdate.GetUpdates(_minecraftCronConfiguration.GameId).Cast<GameUpdate>().ToList();
             var paperUpdates = PaperManifest.GetManifest();
 
-            foreach (var version in paperUpdates.Versions)
+            foreach (var version in paperUpdates.Versions.Take(_minecraftCronConfiguration.PaperSettings.GetLastReleaseUpdates))
             {
                 var gameUpdate = PaperManifest.GetGameUpdate(version);
                 if (!gameUpdates.Any(x => x.Name == gameUpdate.Name && x.GroupName == gameUpdate.GroupName))

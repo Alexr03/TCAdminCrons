@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using TCAdmin.GameHosting.SDK.Objects;
 using TCAdminCrons.Configuration;
@@ -45,9 +47,17 @@ namespace TCAdminCrons.Models.MinecraftVanilla
         {
             var config = MinecraftCronConfiguration.GetConfiguration();
             
+            var newId = Regex.Replace(this.Id, "[^0-9]", "");
+            int.TryParse(newId, out var parsedId);
+
+            var variables = new Dictionary<string, object>
+            {
+                {"Update", this}
+            };
+
             var gameUpdate = new GameUpdate
             {
-                Name = config.VanillaSettings.NameTemplate.Replace("{Id}", Id),
+                Name = config.VanillaSettings.NameTemplate.ReplaceWithVariables(variables),
                 GroupName = this.Type == "release" ? config.VanillaSettings.Group : config.VanillaSettings.SnapshotGroup,
                 WindowsFileName = $"{this.Downloads.Server.Url} minecraft_server.jar",
                 LinuxFileName = $"{this.Downloads.Server.Url} minecraft_server.jar",
@@ -55,11 +65,11 @@ namespace TCAdminCrons.Models.MinecraftVanilla
                 Reinstallable = true,
                 DefaultInstall = false,
                 GameId = config.GameId,
-                Comments = $"This is a vanilla server snapshot of Minecraft: Java Edition | Release Date: {this.ReleaseTime} | Added by TCAdminCrons",
+                Comments = config.VanillaSettings.Description.ReplaceWithVariables(variables),
                 UserAccess = true,
                 SubAdminAccess = true,
                 ResellerAccess = true,
-                ViewOrder = config.VanillaSettings.UseVersionAsViewOrder ? int.Parse(this.Id.Replace(".", ".")) : 0
+                ViewOrder = config.VanillaSettings.UseVersionAsViewOrder ? parsedId : 0
             };
 
             gameUpdate.GenerateKey();

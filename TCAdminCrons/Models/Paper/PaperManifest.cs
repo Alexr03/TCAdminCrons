@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Net;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using TCAdmin.GameHosting.SDK.Objects;
 using TCAdminCrons.Configuration;
@@ -27,6 +28,14 @@ namespace TCAdminCrons.Models.Paper
         {
             var config = MinecraftCronConfiguration.GetConfiguration();
             
+            var newId = Regex.Replace(version, "[^0-9]", "");
+            int.TryParse(newId, out var parsedId);
+            
+            var variables = new Dictionary<string, object>
+            {
+                {"Version", version}
+            };
+            
             var gameUpdate = new GameUpdate
             {
                 Name = config.PaperSettings.NameTemplate.Replace("{Id}", version),
@@ -37,11 +46,11 @@ namespace TCAdminCrons.Models.Paper
                 Reinstallable = true,
                 DefaultInstall = false,
                 GameId = config.GameId,
-                Comments = $"Paper is the next generation of Minecraft server, compatible with Spigot plugins and offering uncompromising performance. | Added by TCAdminCrons",
+                Comments = config.VanillaSettings.Description.ReplaceWithVariables(variables),
                 UserAccess = true,
                 SubAdminAccess = true,
                 ResellerAccess = true,
-                ViewOrder = config.PaperSettings.UseVersionAsViewOrder ? int.Parse(version.Replace(".", ".")) : 0
+                ViewOrder = config.PaperSettings.UseVersionAsViewOrder ? parsedId : 0
             };
 
             gameUpdate.GenerateKey();

@@ -14,7 +14,7 @@ namespace TCAdminCrons.Crons.GameUpdates
 
         public override async Task DoAction()
         {
-            if (!_minecraftCronConfiguration.EnableCron || !_minecraftCronConfiguration.PaperSettings.Enabled)
+            if (!_minecraftCronConfiguration.VanillaSettings.Enabled)
             {
                 Log.Information("[Minecraft Vanilla Update Cron] - Disabled in Configuration.");
                 return;
@@ -35,10 +35,10 @@ namespace TCAdminCrons.Crons.GameUpdates
         {
             var gameUpdates = GameUpdate.GetUpdates(_minecraftCronConfiguration.GameId).Cast<GameUpdate>().ToList();
             var snapshots = MinecraftVersionManifest.GetManifests().Versions
-                .Where(x => x.Type.ToLower() == "snapshot").Take(_minecraftCronConfiguration.GetLastUpdates);
+                .Where(x => x.Type.ToLower() == "snapshot").Take(_minecraftCronConfiguration.VanillaSettings.GetLastSnapshotUpdates);
 
             var releases = MinecraftVersionManifest.GetManifests().Versions
-                .Where(x => x.Type.ToLower() == "release").Take(_minecraftCronConfiguration.GetLastUpdates);
+                .Where(x => x.Type.ToLower() == "release").Take(_minecraftCronConfiguration.VanillaSettings.GetLastReleaseUpdates);
 
             foreach (var metaData in snapshots.Select(version => version.GetMetadata()))
             {

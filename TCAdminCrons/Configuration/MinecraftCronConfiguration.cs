@@ -1,11 +1,9 @@
 ﻿namespace TCAdminCrons.Configuration
 {
-    public class MinecraftCronConfiguration : CronConfiguration
+    public class MinecraftCronConfiguration
     {
         public int GameId { get; set; } = 0;
         
-        public int GetLastUpdates { get; set; } = 15;
-
         public VanillaSettings VanillaSettings { get; set; } = new VanillaSettings();
         
         public PaperSettings PaperSettings { get; set; } = new PaperSettings();
@@ -25,8 +23,15 @@
         public string Group { get; set; } = "Vanilla Release";
         
         public string SnapshotGroup { get; set; } = "Vanilla Snapshot";
-        
+
+        public string Description { get; set; } =
+            "This is a vanilla server snapshot of Minecraft: Java Edition | Release Date: {Update.ReleaseTime} | Added by TCAdminCrons";
+
         public bool UseVersionAsViewOrder { get; set; } = true;
+        
+        public int GetLastReleaseUpdates { get; set; } = 15;
+        
+        public int GetLastSnapshotUpdates { get; set; } = 15;
     }
     
     public class PaperSettings
@@ -37,6 +42,10 @@
         
         public string NameTemplate { get; set; } = "{Id}";
         
+        public string Description { get; set; } = "Paper is the next generation of Minecraft server, compatible with Spigot plugins and offering uncompromising performance. | Added by TCAdminCrons";
+
         public bool UseVersionAsViewOrder { get; set; } = true;
+        
+        public int GetLastReleaseUpdates { get; set; } = 15;
     }
 }
