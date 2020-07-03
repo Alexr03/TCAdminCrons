@@ -5,6 +5,8 @@ A little program to automatically run some cron jobs that uses TCAdmin like auto
 ## Features
  - Automatic Minecraft Vanilla game updates.
  - Automatic Minecraft Paper game updates.
+- Automatic Minecraft Spigot game updates.
+- Automatic Minecraft Bukkit game updates.
  
  ## How to use
  1. Head to releases page and download the latest version.
