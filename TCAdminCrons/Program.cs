@@ -17,13 +17,13 @@ namespace TCAdminCrons
         public static void Main(string[] args)
         {
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-            Console.Title = "TCAdmin Crons - By Alexr03";
+            Console.Title = "TCAdmin Crons - By Alexr03 | Contributors: M0RG4N01";
 
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console()
                 .CreateLogger();
 
-            Log.Information("TCAdmin Crons - By Alexr03 | Version: " + Assembly.GetExecutingAssembly().GetName().Version);
+            Log.Information("TCAdmin Crons - By Alexr03 | Contributors: M0RG4N01 | Version: " + Assembly.GetExecutingAssembly().GetName().Version);
             CronRegistry = new Registry();
             
             RegisterToTcAdmin();
@@ -40,7 +40,7 @@ namespace TCAdminCrons
             Log.Information("Initializing Cron Registry");
 
             CronRegistry.NonReentrantAsDefault();
-            CronRegistry.Schedule<MinecraftVanillaUpdatesCron>().AndThen<MinecraftPaperUpdatesCron>().ToRunNow().AndEvery(1)
+            CronRegistry.Schedule<MinecraftVanillaUpdatesCron>().AndThen<MinecraftPaperUpdatesCron>().AndThen<MinecraftSpigotUpdatesCron>().AndThen<MinecraftBukkitUpdatesCron>().ToRunNow().AndEvery(1)
                 .Hours();
 
             JobManager.Initialize(CronRegistry);

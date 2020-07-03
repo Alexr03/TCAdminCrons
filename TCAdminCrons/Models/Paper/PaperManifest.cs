@@ -46,7 +46,7 @@ namespace TCAdminCrons.Models.Paper
                 Reinstallable = true,
                 DefaultInstall = false,
                 GameId = config.GameId,
-                Comments = config.VanillaSettings.Description.ReplaceWithVariables(variables),
+                Comments = config.PaperSettings.Description.ReplaceWithVariables(variables),
                 UserAccess = true,
                 SubAdminAccess = true,
                 ResellerAccess = true,
