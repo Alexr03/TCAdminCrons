@@ -8,6 +8,12 @@ namespace TCAdminCrons.Configuration
     {
         public static T GetConfiguration<T>(string configName)
         {
+            var configDirectory = new DirectoryInfo("./Config");
+            if (!configDirectory.Exists)
+            {
+                configDirectory.Create();
+            }
+            
             var configLocation = $"./Config/{configName}";
             if (!File.Exists(configLocation))
             {
