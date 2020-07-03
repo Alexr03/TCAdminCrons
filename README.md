@@ -9,9 +9,10 @@ A little program to automatically run some cron jobs that uses TCAdmin like auto
  ## How to use
  1. Head to releases page and download the latest version.
  2. Extract somewhere
- 3. Open `/Config/TcAdminConfig.json` and fill in the information required.
- 4. Open `/Config/MinecraftUpdates.json` and fill in the information required.
- 5. Open TCAdminCrons.exe - If all goes well you should see updates being added to Minecraft in TCAdmin.
+ 3. Run the application for the first time and wait for the Config folder and files to be generated.
+ 4. Open `/Config/TcAdminConfig.json` and fill in the information required.
+ 5. Open `/Config/MinecraftUpdates.json` and fill in the information required.
+ 6. Open TCAdminCrons.exe - If all goes well you should see updates being added to Minecraft in TCAdmin.
  
 ### How to obtain connection string
 1. Goto **C:/Program Files/TCAdmin2/Monitor/TCAdminMonitor.exe.Config** _(Or linux equivalent)_ and open using a text editor.
